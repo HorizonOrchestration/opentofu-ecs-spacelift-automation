@@ -1,0 +1,11 @@
+# Example configuration for Spacelift IAM role setup
+# Copy this to terraform.tfvars and fill in your actual values
+
+aws_region = "us-east-1"
+
+# Get this from your Spacelift account settings
+# Spacelift > Settings > AWS Integration
+spacelift_principal_arn = "123456789012"
+
+# External ID provided by Spacelift for secure role assumption
+spacelift_external_id_pattern = "your-spacelift-external-id-here*"
