@@ -13,10 +13,11 @@ provider "aws" {
 
   default_tags {
     tags = {
-      deployed   = "spacelift"
-      managed    = "tofu"
-      repository = "opentofu-ecs-spacelift-automation"
-      layer      = "prerequisites"
+      deployed    = "spacelift"
+      managed     = "tofu"
+      repository  = "opentofu-ecs-spacelift-automation"
+      layer       = "prerequisites"
+      environment = var.environment
     }
   }
 }
