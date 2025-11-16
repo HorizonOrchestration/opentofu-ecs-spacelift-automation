@@ -68,3 +68,18 @@ resource "aws_flow_log" "ecs_vpc" {
     Name = "${var.environment}-ecs-vpc-flow-logs"
   }
 }
+
+# ------------------------------------------------------------------------------
+# CloudWatch Log Group for ECS
+# ------------------------------------------------------------------------------
+
+resource "aws_cloudwatch_log_group" "ecs_cluster" {
+  count             = var.enable_cloudwatch_logging ? 1 : 0
+  name              = "/aws/ecs/cluster/${var.environment}"
+  retention_in_days = var.cloudwatch_log_retention_days
+  kms_key_id        = var.enable_cloudwatch_logging ? aws_kms_key.customer_managed_key[0].arn : null
+
+  tags = {
+    Name = "${var.environment}-ecs-cluster-logs"
+  }
+}

@@ -111,3 +111,19 @@ variable "cloudwatch_log_retention_days" {
   type        = number
   default     = 7
 }
+
+# ------------------------------------------------------------------------------
+# ECS Cluster
+# ------------------------------------------------------------------------------
+
+variable "enable_container_insights" {
+  description = "Whether to enable Container Insights for the ECS cluster"
+  type        = bool
+  default     = false
+}
+
+variable "capacity_provider" {
+  description = "ECS capacity provider to use (FARGATE or FARGATE_SPOT)"
+  type        = string
+  default     = "FARGATE_SPOT"
+}
