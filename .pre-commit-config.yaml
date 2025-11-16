@@ -10,15 +10,6 @@ repos:
         args:
           - --hook-config=--path-to-file=README.md
           - --hook-config=--add-to-existing-file=true
-          - --hook-config=--create-file-if-not-exist=true
+          - --hook-config=--create-file-if-not-exist=false
           - --args=--hide requirements
         files: ^ecs/
-
-  - repo: local
-    hooks:
-      - id: spacelift-local-preview
-        name: Spacelift Local Preview
-        entry: bash -c 'cd ecs && spacelift stack local-preview --id ecs'
-        language: system
-        pass_filenames: false
-        files: ^ecs/.*\.tf$
