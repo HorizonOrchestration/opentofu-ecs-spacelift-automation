@@ -38,7 +38,7 @@ terraform.rc
 # .terraform.lock.hcl
 
 # Spacelift-specific
-.spacelift/
+# .spacelift/
 
 # IDE and editor files
 .vscode/
