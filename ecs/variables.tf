@@ -127,3 +127,51 @@ variable "capacity_provider" {
   type        = string
   default     = "FARGATE_SPOT"
 }
+
+# ------------------------------------------------------------------------------
+# ECS Service Configuration
+# ------------------------------------------------------------------------------
+
+variable "default_task_cpu" {
+  description = "Default CPU units for service tasks (256, 512, 1024, 2048, 4096)"
+  type        = number
+  default     = 256
+}
+
+variable "default_task_memory" {
+  description = "Default memory for service tasks in MB (512, 1024, 2048, etc.)"
+  type        = number
+  default     = 512
+}
+
+variable "ecs_services" {
+  description = "Map of ECS services to create"
+  type = map(object({
+    container_image       = string
+    container_name        = string
+    container_port        = optional(number)
+    task_cpu              = optional(number)
+    task_memory           = optional(number)
+    environment_variables = optional(map(string))
+    secrets               = optional(map(string))
+    health_check = optional(object({
+      command      = list(string)
+      interval     = number
+      timeout      = number
+      retries      = number
+      start_period = number
+    }))
+    mount_points = optional(list(object({
+      source_volume  = string
+      container_path = string
+      read_only      = bool
+    })))
+    efs_volumes = optional(list(object({
+      name            = string
+      file_system_id  = string
+      root_directory  = string
+      access_point_id = string
+    })))
+  }))
+  default = {}
+}
