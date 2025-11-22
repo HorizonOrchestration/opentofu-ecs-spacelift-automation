@@ -80,7 +80,7 @@ resource "aws_subnet" "ecs_private" {
 
 resource "aws_nat_gateway" "ecs" {
   count         = var.use_private_cidrs ? 1 : 0
-  allocation_id = aws_eip.ecs_nat.id
+  allocation_id = aws_eip.ecs_nat[0].id
   subnet_id     = aws_subnet.ecs_public[0].id
 
   tags = {
@@ -89,6 +89,7 @@ resource "aws_nat_gateway" "ecs" {
 }
 
 resource "aws_eip" "ecs_nat" {
+  count = var.use_private_cidrs ? 1 : 0
   tags = {
     Name = "${var.environment}-ecs-nat-eip"
   }
