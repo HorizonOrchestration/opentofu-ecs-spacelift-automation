@@ -26,3 +26,18 @@ resource "aws_ecs_cluster_capacity_providers" "main" {
 
   capacity_providers = [var.capacity_provider]
 }
+
+# ------------------------------------------------------------------------------
+# CloudWatch Log Group for ECS Tasks
+# ------------------------------------------------------------------------------
+
+resource "aws_cloudwatch_log_group" "ecs_tasks" {
+  count             = var.enable_cloudwatch_logging ? 1 : 0
+  name              = "/aws/ecs/${var.environment}"
+  retention_in_days = var.cloudwatch_log_retention_days
+  kms_key_id        = aws_kms_key.customer_managed_key[0].arn
+
+  tags = {
+    Name = "${var.environment}-ecs-tasks-logs"
+  }
+}
