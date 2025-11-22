@@ -132,26 +132,14 @@ variable "capacity_provider" {
 # ECS Service Configuration
 # ------------------------------------------------------------------------------
 
-variable "default_task_cpu" {
-  description = "Default CPU units for service tasks (256, 512, 1024, 2048, 4096)"
-  type        = number
-  default     = 256
-}
-
-variable "default_task_memory" {
-  description = "Default memory for service tasks in MB (512, 1024, 2048, etc.)"
-  type        = number
-  default     = 512
-}
-
 variable "ecs_services" {
   description = "Map of ECS services to create"
   type = map(object({
     container_image       = string
     container_name        = string
     container_port        = optional(number)
-    task_cpu              = optional(number)
-    task_memory           = optional(number)
+    task_cpu              = optional(number, 256)
+    task_memory           = optional(number, 512)
     environment_variables = optional(map(string), {})
     secrets               = optional(map(string), {})
     health_check = optional(object({

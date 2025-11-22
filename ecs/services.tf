@@ -10,8 +10,8 @@ module "services" {
   aws_region  = var.aws_region
 
   # Task Configuration
-  task_cpu           = lookup(each.value, "task_cpu", var.default_task_cpu)
-  task_memory        = lookup(each.value, "task_memory", var.default_task_memory)
+  task_cpu           = each.value.task_cpu
+  task_memory        = each.value.task_memory
   execution_role_arn = aws_iam_role.ecs_task_execution.arn
   task_role_arn      = aws_iam_role.ecs_task.arn
 
