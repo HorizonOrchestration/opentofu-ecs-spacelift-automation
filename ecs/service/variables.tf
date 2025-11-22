@@ -82,6 +82,7 @@ variable "secrets" {
 variable "log_group_name" {
   description = "CloudWatch log group name for container logs"
   type        = string
+  default     = null
 }
 
 # ------------------------------------------------------------------------------
