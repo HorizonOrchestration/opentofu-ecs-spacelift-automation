@@ -39,11 +39,8 @@ RUN unzip /tmp/tflint.zip -d /bin && \
     chmod 755 /bin/tflint && \
     rm /tmp/tflint.zip
 
-# Download terrascan
-ADD "https://github.com/tenable/terrascan/releases/latest/download/terrascan_1.19.9_Linux_x86_64.tar.gz" /tmp/terrascan.tar.gz
-RUN tar -xzf /tmp/terrascan.tar.gz -C /bin terrascan && \
-    chmod 755 /bin/terrascan && \
-    rm /tmp/terrascan.tar.gz
+# Install checkov
+RUN python3 -m pip install checkov --break-system-packages
 
 RUN echo "hosts: files dns" > /etc/nsswitch.conf \
     && adduser --disabled-password --uid=1983 spacelift
@@ -56,7 +53,7 @@ COPY --from=ghcr.io/spacelift-io/aws-cli-alpine /aws-cli-bin/ /usr/local/bin/
 RUN aws --version && \
     terragrunt --version && \
     tflint --version && \
-    terrascan version && \
+    checkov --version && \
     python --version && \
     infracost --version && \
     spaceforge --version
@@ -70,7 +67,7 @@ RUN gcloud components install gke-gcloud-auth-plugin
 RUN gcloud --version && \
     terragrunt --version && \
     tflint --version && \
-    terrascan version && \
+    checkov --version && \
     python --version && \
     infracost --version && \
     spaceforge --version
@@ -96,7 +93,7 @@ RUN apk add --no-cache py3-pip && \
     az --version && \
     terragrunt --version && \
     tflint --version && \
-    terrascan version && \
+    checkov --version && \
     python --version && \
     infracost --version && \
     spaceforge --version

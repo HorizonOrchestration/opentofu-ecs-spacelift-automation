@@ -1,0 +1,11 @@
+file:
+- tfplan.json
+skip-check:
+- CKV_AWS_130 # Using public subnets in dev for cost.
+- CKV_AWS_352 # Allow all ingress from within the VPC.
+- CKV_AWS_231 # Allow ephemeral ports for egress-return traffic
+- CKV_AWS_382 # Allow all egress from tasks for updates, etc.
+- CKV_AWS_338 # Allow shorter cloudwatch log retention for cost.
+- CKV_AWS_336 # False positive.
+- CKV2_AWS_5  # Temp disable until tasks are ready.
+quiet: true
