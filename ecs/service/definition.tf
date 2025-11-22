@@ -1,15 +1,7 @@
 # ECS Task Definition
 
-resource "aws_ecs_task_definition" "main" {
-  family                   = "${var.environment}-${var.task_name}"
-  network_mode             = "awsvpc"
-  requires_compatibilities = ["FARGATE"]
-  cpu                      = var.task_cpu
-  memory                   = var.task_memory
-  execution_role_arn       = var.execution_role_arn
-  task_role_arn            = var.task_role_arn
-
-  container_definitions = jsonencode([
+locals {
+  container_definitions = [
     {
       name      = var.container_name
       image     = var.container_image
@@ -36,14 +28,14 @@ resource "aws_ecs_task_definition" "main" {
         }
       ]
 
-      logConfiguration = {
+      logConfiguration = var.log_group_name != null ? {
         logDriver = "awslogs"
         options = {
           "awslogs-group"         = var.log_group_name
           "awslogs-region"        = var.aws_region
           "awslogs-stream-prefix" = var.task_name
         }
-      }
+      } : null
 
       healthCheck = var.health_check != null ? {
         command     = var.health_check.command
@@ -61,25 +53,19 @@ resource "aws_ecs_task_definition" "main" {
         }
       ]
     }
-  ])
+  ]
+}
 
-  dynamic "volume" {
-    for_each = var.efs_volumes
-    content {
-      name = volume.value.name
+resource "aws_ecs_task_definition" "main" {
+  family                   = "${var.environment}-${var.task_name}"
+  network_mode             = "awsvpc"
+  requires_compatibilities = ["FARGATE"]
+  cpu                      = var.task_cpu
+  memory                   = var.task_memory
+  execution_role_arn       = var.execution_role_arn
+  task_role_arn            = var.task_role_arn
 
-      efs_volume_configuration {
-        file_system_id          = volume.value.file_system_id
-        root_directory          = volume.value.root_directory
-        transit_encryption      = "ENABLED"
-        transit_encryption_port = 2999
-        authorization_config {
-          access_point_id = volume.value.access_point_id
-          iam             = "ENABLED"
-        }
-      }
-    }
-  }
+  container_definitions = jsonencode(local.container_definitions)
 
   tags = {
     Name = "${var.environment}-${var.task_name}"

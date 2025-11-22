@@ -28,7 +28,31 @@ resource "aws_iam_role_policy_attachment" "ecs_task_execution_policy" {
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
 }
 
-# # Additional permissions for SSM Parameter Store / Secrets Manager
+# Additional permissions for CloudWatch Logs
+data "aws_iam_policy_document" "ecs_task_execution_logs" {
+  count = var.enable_cloudwatch_logging ? 1 : 0
+
+  statement {
+    effect = "Allow"
+    actions = [
+      "logs:CreateLogStream",
+      "logs:PutLogEvents"
+    ]
+    resources = [
+      aws_cloudwatch_log_group.ecs_tasks[0].arn,
+      "${aws_cloudwatch_log_group.ecs_tasks[0].arn}:*"
+    ]
+  }
+}
+
+resource "aws_iam_role_policy" "ecs_task_execution_logs" {
+  count  = var.enable_cloudwatch_logging ? 1 : 0
+  name   = "${var.environment}-ecs-task-execution-logs-policy"
+  role   = aws_iam_role.ecs_task_execution.id
+  policy = data.aws_iam_policy_document.ecs_task_execution_logs[0].json
+}
+
+# Additional permissions for SSM Parameter Store / Secrets Manager
 data "aws_iam_policy_document" "ecs_task_execution_secrets" {
   statement {
     effect = "Allow"
@@ -95,10 +119,10 @@ resource "aws_security_group" "ecs_tasks" {
   vpc_id      = aws_vpc.ecs.id
 
   egress {
-    description = "Allow all outbound traffic - Managed by Tofu"
-    protocol    = "-1"
-    from_port   = 0
-    to_port     = 0
+    description = "Allow HTTPS outbound traffic - Managed by Tofu"
+    protocol    = "tcp"
+    from_port   = 443
+    to_port     = 443
     cidr_blocks = ["0.0.0.0/0"]
   }
 

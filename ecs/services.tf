@@ -23,7 +23,7 @@ module "services" {
   secrets               = lookup(each.value, "secrets", {})
 
   # Logging
-  log_group_name = aws_cloudwatch_log_group.ecs_services.name
+  log_group_name = var.enable_cloudwatch_logging ? aws_cloudwatch_log_group.ecs_tasks[0].name : null
 
   # Health Check
   health_check = lookup(each.value, "health_check", null)

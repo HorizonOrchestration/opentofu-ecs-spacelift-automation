@@ -152,8 +152,8 @@ variable "ecs_services" {
     container_port        = optional(number)
     task_cpu              = optional(number)
     task_memory           = optional(number)
-    environment_variables = optional(map(string))
-    secrets               = optional(map(string))
+    environment_variables = optional(map(string), {})
+    secrets               = optional(map(string), {})
     health_check = optional(object({
       command      = list(string)
       interval     = number
@@ -165,13 +165,7 @@ variable "ecs_services" {
       source_volume  = string
       container_path = string
       read_only      = bool
-    })))
-    efs_volumes = optional(list(object({
-      name            = string
-      file_system_id  = string
-      root_directory  = string
-      access_point_id = string
-    })))
+    })), [])
   }))
   default = {}
 }
