@@ -110,6 +110,36 @@ resource "aws_iam_role" "ecs_task" {
 # # Example: S3 access, DynamoDB access, etc.
 
 # ------------------------------------------------------------------------------
+# ECS Infrastructure Role (for EBS volume management)
+# ------------------------------------------------------------------------------
+
+data "aws_iam_policy_document" "ecs_infrastructure_assume_role" {
+  statement {
+    effect = "Allow"
+    principals {
+      type        = "Service"
+      identifiers = ["ecs.amazonaws.com"]
+    }
+    actions = ["sts:AssumeRole"]
+  }
+}
+
+resource "aws_iam_role" "ecs_infrastructure" {
+  name               = "${var.environment}-ecs-infrastructure-role"
+  description        = "IAM role for ECS infrastructure management (EBS volumes) - Managed by Tofu"
+  assume_role_policy = data.aws_iam_policy_document.ecs_infrastructure_assume_role.json
+
+  tags = {
+    Name = "${var.environment}-ecs-infrastructure-role"
+  }
+}
+
+resource "aws_iam_role_policy_attachment" "ecs_infrastructure_volumes" {
+  role       = aws_iam_role.ecs_infrastructure.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSInfrastructureRolePolicyForVolumes"
+}
+
+# ------------------------------------------------------------------------------
 # Security Group for ECS Tasks
 # ------------------------------------------------------------------------------
 

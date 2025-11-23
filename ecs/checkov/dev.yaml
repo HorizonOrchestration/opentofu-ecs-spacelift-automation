@@ -7,6 +7,5 @@ skip-check:
 - CKV_AWS_338 # Allow shorter cloudwatch log retention for cost.
 - CKV_AWS_65  # Disable container insights in dev for cost.
 - CKV2_AWS_11 # Disable VPC flow logs in dev for cost.
-- CKV_AWS_336 # False positive.
 - CKV2_AWS_5  # Temp disable until tasks are ready.
 quiet: true
