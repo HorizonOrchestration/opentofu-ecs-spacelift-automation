@@ -106,8 +106,10 @@ resource "aws_iam_role" "ecs_task" {
   }
 }
 
-# # Add custom policies as needed for application permissions
-# # Example: S3 access, DynamoDB access, etc.
+resource "aws_iam_role_policy_attachment" "ecs_task_ssm" {
+  role       = aws_iam_role.ecs_task.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+}
 
 # ------------------------------------------------------------------------------
 # ECS Infrastructure Role (for EBS volume management)
