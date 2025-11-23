@@ -3,9 +3,10 @@
 locals {
   container_definitions = [
     {
-      name      = var.container_name
-      image     = var.container_image
-      essential = true
+      name                   = var.container_name
+      image                  = var.container_image
+      essential              = true
+      readonlyRootFilesystem = true
 
       portMappings = var.container_port != null ? [
         {
