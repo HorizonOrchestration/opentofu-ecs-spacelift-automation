@@ -34,6 +34,7 @@ locals {
     "ElasticLoadBalancingFullAccess",
     "CloudWatchFullAccess",
     "AmazonS3FullAccess",
+    "IAMFullAccess"
   ]
 }
 
