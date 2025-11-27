@@ -29,10 +29,6 @@ RUN tar -xzf /tmp/infracost.tar.gz -C /bin && \
     chmod 755 /bin/infracost && \
     rm /tmp/infracost.tar.gz
 
-# Download Terragrunt.
-ADD "https://github.com/gruntwork-io/terragrunt/releases/download/v0.93.3/terragrunt_linux_${TARGETARCH}" /bin/terragrunt
-RUN chmod 755 /bin/terragrunt
-
 # Download tflint
 ADD "https://github.com/terraform-linters/tflint/releases/latest/download/tflint_linux_${TARGETARCH}.zip" /tmp/tflint.zip
 RUN unzip /tmp/tflint.zip -d /bin && \
@@ -44,35 +40,6 @@ RUN python3 -m pip install checkov --break-system-packages
 
 RUN echo "hosts: files dns" > /etc/nsswitch.conf \
     && adduser --disabled-password --uid=1983 spacelift
-
-FROM base AS aws
-
-COPY --from=ghcr.io/spacelift-io/aws-cli-alpine /usr/local/aws-cli/ /usr/local/aws-cli/
-COPY --from=ghcr.io/spacelift-io/aws-cli-alpine /aws-cli-bin/ /usr/local/bin/
-
-RUN aws --version && \
-    terragrunt --version && \
-    tflint --version && \
-    checkov --version && \
-    python --version && \
-    infracost --version && \
-    spaceforge --version
-
-USER spacelift
-
-FROM base AS gcp
-
-RUN gcloud components install gke-gcloud-auth-plugin
-
-RUN gcloud --version && \
-    terragrunt --version && \
-    tflint --version && \
-    checkov --version && \
-    python --version && \
-    infracost --version && \
-    spaceforge --version
-
-USER spacelift
 
 FROM base AS azure-build
 
@@ -91,7 +58,6 @@ COPY --from=azure-build /opt/venv /opt/venv
 
 RUN apk add --no-cache py3-pip && \
     az --version && \
-    terragrunt --version && \
     tflint --version && \
     checkov --version && \
     python --version && \

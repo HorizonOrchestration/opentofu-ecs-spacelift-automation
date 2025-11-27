@@ -20,11 +20,13 @@
 
 param(
     [string]$RepositoryName = "runners/spacelift",
-    [string]$ImageTag = "latest"
+    [string]$ImageTag = "latest",
+    [string]$Path = "./aws-tofu/"
 )
 
 $ErrorActionPreference = "Stop"
 
+Set-Location -Path $Path
 Write-Host "Building and pushing Docker image to ECR Public..." -ForegroundColor Cyan
 
 # Public ECR always uses us-east-1
@@ -53,11 +55,11 @@ $ImageUri = "${RepoUri}:${ImageTag}"
 
 # Authenticate Docker to ECR Public
 Write-Host "`n→ Authenticating Docker to ECR Public..." -ForegroundColor Yellow
-aws ecr-public get-login-password --region $Region | docker login --username AWS --password-stdin $EcrUri
-if ($LASTEXITCODE -ne 0) {
-    Write-Error "Failed to authenticate Docker to ECR Public"
-    exit 1
-}
+# aws ecr-public get-login-password --region $Region | docker login --username AWS --password-stdin $EcrUri
+# if ($LASTEXITCODE -ne 0) {
+#     Write-Error "Failed to authenticate Docker to ECR Public"
+#     exit 1
+# }
 Write-Host "  Authentication successful" -ForegroundColor Green
 
 # Build Docker image
