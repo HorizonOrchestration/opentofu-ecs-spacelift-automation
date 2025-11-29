@@ -51,7 +51,7 @@ resource "aws_cloudwatch_log_group" "ecs_vpc_flow_logs" {
   count             = var.enable_cloudwatch_logging ? 1 : 0
   name              = "/aws/vpc/${var.environment}-ecs-flow-logs"
   retention_in_days = var.cloudwatch_log_retention_days
-  kms_key_id        = var.enable_cloudwatch_logging ? aws_kms_key.customer_managed_key[0].arn : null
+  kms_key_id        = var.enable_cloudwatch_logging ? aws_kms_key.customer_managed_key.arn : null
 
   tags = {
     Name = "${var.environment}-ecs-vpc-flow-logs"
@@ -79,7 +79,7 @@ resource "aws_cloudwatch_log_group" "ecs_cluster" {
   count             = var.enable_cloudwatch_logging ? 1 : 0
   name              = "/aws/ecs/cluster/${var.environment}"
   retention_in_days = var.cloudwatch_log_retention_days
-  kms_key_id        = var.enable_cloudwatch_logging ? aws_kms_key.customer_managed_key[0].arn : null
+  kms_key_id        = var.enable_cloudwatch_logging ? aws_kms_key.customer_managed_key.arn : null
 
   tags = {
     Name = "${var.environment}-ecs-cluster-logs"

@@ -34,7 +34,6 @@ data "aws_iam_policy_document" "customer_managed_key" {
 }
 
 resource "aws_kms_key" "customer_managed_key" {
-  count               = var.enable_cloudwatch_logging ? 1 : 0
   description         = "CMK KMS key for environment-wide usage - Managed by Tofu"
   enable_key_rotation = true
 
