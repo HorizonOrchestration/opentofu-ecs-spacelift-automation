@@ -103,7 +103,7 @@ variable "additional_private_egress_rules" {
 variable "enable_cloudwatch_logging" {
   description = "Whether to enable CloudWatch logging for VPC Flow Logs"
   type        = bool
-  default     = false
+  default     = true
 }
 
 variable "cloudwatch_log_retention_days" {
@@ -119,13 +119,13 @@ variable "cloudwatch_log_retention_days" {
 variable "enable_container_insights" {
   description = "Whether to enable Container Insights for the ECS cluster"
   type        = bool
-  default     = false
+  default     = true
 }
 
 variable "capacity_provider" {
   description = "ECS capacity provider to use (FARGATE or FARGATE_SPOT)"
   type        = string
-  default     = "FARGATE_SPOT"
+  default     = "FARGATE"
 }
 
 # ------------------------------------------------------------------------------

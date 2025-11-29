@@ -1,4 +1,6 @@
-# VPC Flow Logs resources
+# ------------------------------------------------------------------------------
+# Logging Resources
+# ------------------------------------------------------------------------------
 
 data "aws_iam_policy_document" "vpc_flow_logs_assume_role" {
   statement {

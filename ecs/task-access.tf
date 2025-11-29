@@ -1,5 +1,5 @@
 # ------------------------------------------------------------------------------
-# ECS Task Execution Role (for pulling images, logging, secrets)
+# ECS IAM Resources and Security Group
 # ------------------------------------------------------------------------------
 
 data "aws_iam_policy_document" "ecs_task_execution_assume_role" {
