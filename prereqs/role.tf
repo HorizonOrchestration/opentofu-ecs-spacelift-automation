@@ -25,27 +25,10 @@ resource "aws_iam_role" "spacelift_tofu" {
   assume_role_policy = data.aws_iam_policy_document.spacelift_assume_role.json
 }
 
-# AWS managed policies to attach
-locals {
-  managed_policies = [
-    "AmazonECS_FullAccess",
-    "AmazonEC2ContainerRegistryFullAccess",
-    "AmazonVPCFullAccess",
-    "ElasticLoadBalancingFullAccess",
-    "CloudWatchFullAccess",
-    "AmazonS3FullAccess",
-    "IAMFullAccess"
-  ]
-}
-
 # Attach AWS managed policies using for_each
-resource "aws_iam_role_policy_attachment" "managed_policies" {
-  for_each = {
-    for policy in local.managed_policies : policy => policy
-  }
-
+resource "aws_iam_role_policy_attachment" "deployment" {
   role       = aws_iam_role.spacelift_tofu.name
-  policy_arn = "arn:aws:iam::aws:policy/${each.value}"
+  policy_arn = "arn:aws:iam::aws:policy/AdministratorAccess"
 }
 
 # Minimal custom policy for IAM role management and other services
