@@ -47,73 +47,25 @@ variable "task_role_arn" {
 # Container Configuration
 # ------------------------------------------------------------------------------
 
-variable "container_name" {
-  description = "Name of the container"
-  type        = string
-}
-
-variable "container_image" {
-  description = "Docker image to use for the container"
-  type        = string
-}
-
-variable "container_port" {
-  description = "Port the container listens on (set to null if no port mapping needed)"
-  type        = number
-  default     = null
-}
-
-variable "environment_variables" {
-  description = "Environment variables to pass to the container"
-  type        = map(string)
-  default     = {}
-}
-
-variable "secrets" {
-  description = "Secrets to pass to the container from SSM Parameter Store or Secrets Manager"
-  type        = map(string)
-  default     = {}
+variable "container_definitions" {
+  description = "Container definitions for the ECS task"
+  type        = list(any)
+  default     = []
 }
 
 # ------------------------------------------------------------------------------
 # Logging Configuration
 # ------------------------------------------------------------------------------
 
-variable "log_group_name" {
-  description = "CloudWatch log group name for container logs"
-  type        = string
-  default     = null
-}
-
-# ------------------------------------------------------------------------------
-# Health Check Configuration
-# ------------------------------------------------------------------------------
-
-variable "health_check" {
-  description = "Container health check configuration"
-  type = object({
-    command      = list(string)
-    interval     = number
-    timeout      = number
-    retries      = number
-    start_period = number
-  })
-  default = null
-}
+# variable "log_group_name" {
+#   description = "CloudWatch log group name for container logs"
+#   type        = string
+#   default     = null
+# }
 
 # ------------------------------------------------------------------------------
 # Storage Configuration
 # ------------------------------------------------------------------------------
-
-variable "mount_points" {
-  description = "Mount points for volumes in the container"
-  type = list(object({
-    source_volume  = string
-    container_path = string
-    read_only      = bool
-  }))
-  default = []
-}
 
 variable "efs_file_system_id" {
   description = "EFS filesystem ID for shared configuration storage"
