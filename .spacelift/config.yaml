@@ -14,11 +14,7 @@ stack_defaults:
 
 stacks:
   ecs:
-    project_root: infra
-        terraform_version: 0.12.4
-    second-stack:
-        <<: *shared
-        terraform_version: 0.13.0
-        environment:
-            AWS_REGION: eu-west-1
-            TF_VAR_access_roles: '[productionsecurity, admin]'
+    project_root: ecs/
+    environment:
+      ENVIRONMENT: dev
+      TF_CLI_ARGS_plan: -var-file environments/$ENVIRONMENT.tfvars

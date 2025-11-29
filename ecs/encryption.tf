@@ -1,4 +1,6 @@
-# Shared Encryption Resources
+# ------------------------------------------------------------------------------
+# KMS Encryption Resources
+# ------------------------------------------------------------------------------
 
 data "aws_iam_policy_document" "customer_managed_key" {
   statement {
