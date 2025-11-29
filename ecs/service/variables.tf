@@ -102,7 +102,7 @@ variable "health_check" {
 }
 
 # ------------------------------------------------------------------------------
-# Volume Configuration
+# Storage Configuration
 # ------------------------------------------------------------------------------
 
 variable "mount_points" {
@@ -115,13 +115,7 @@ variable "mount_points" {
   default = []
 }
 
-variable "efs_volumes" {
-  description = "EFS volumes to attach to the task"
-  type = list(object({
-    name            = string
-    file_system_id  = string
-    root_directory  = string
-    access_point_id = string
-  }))
-  default = []
+variable "efs_file_system_id" {
+  description = "EFS filesystem ID for shared configuration storage"
+  type        = string
 }

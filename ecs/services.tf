@@ -30,7 +30,7 @@ module "services" {
   # Health Check
   health_check = lookup(each.value, "health_check", null)
 
-  # Volumes
-  mount_points = lookup(each.value, "mount_points", [])
-  efs_volumes  = lookup(each.value, "efs_volumes", [])
+  # Storage
+  mount_points       = lookup(each.value, "mount_points", [])
+  efs_file_system_id = aws_efs_file_system.ecs_efs.id
 }
