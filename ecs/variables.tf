@@ -135,25 +135,9 @@ variable "capacity_provider" {
 variable "ecs_services" {
   description = "Map of ECS services to create"
   type = map(object({
-    container_image       = string
-    container_name        = string
-    container_port        = optional(number)
     task_cpu              = optional(number, 256)
     task_memory           = optional(number, 512)
-    environment_variables = optional(map(string), {})
-    secrets               = optional(map(string), {})
-    health_check = optional(object({
-      command      = list(string)
-      interval     = number
-      timeout      = number
-      retries      = number
-      start_period = number
-    }))
-    mount_points = optional(list(object({
-      source_volume  = string
-      container_path = string
-      read_only      = bool
-    })), [])
+    container_definitions = list(any)
   }))
   default = {}
 }
