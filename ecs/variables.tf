@@ -63,7 +63,7 @@ variable "use_private_cidrs" {
 variable "allowed_public_ingress_cidrs" {
   description = "List of CIDR blocks allowed to access public subnets on HTTPS (443)"
   type        = list(string)
-  default     = ["154.51.81.155/32"]
+  default     = ["123.123.123.123/32"]
 }
 
 variable "additional_public_egress_rules" {
