@@ -11,7 +11,7 @@ resource "aws_efs_access_point" "config" {
   }
 
   root_directory {
-    path = "/${var.task_name}"
+    path = "/${var.task_name}-${var.container_definitions[0].name}-config"
 
     creation_info {
       owner_gid   = 1000
