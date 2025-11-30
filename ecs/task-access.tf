@@ -158,6 +158,14 @@ resource "aws_security_group" "ecs_tasks" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
+  egress {
+    description = "Allow NFS traffic for EFS - Managed by Tofu"
+    protocol    = "tcp"
+    from_port   = 2049
+    to_port     = 2049
+    cidr_blocks = [aws_vpc.ecs.cidr_block]
+  }
+
   tags = {
     Name = "${var.environment}-ecs-tasks-sg"
   }
