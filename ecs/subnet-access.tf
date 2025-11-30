@@ -3,6 +3,29 @@
 # ------------------------------------------------------------------------------
 
 locals {
+  service_ports = distinct(flatten([ # Retrieve all service ports from ECS configs
+    for service, config in var.ecs_services : [
+      for container in config.container_definitions : [
+        for port_mapping in container.portMappings :
+        port_mapping.containerPort
+      ]
+    ]
+  ]))
+  ecs_public_cidr_service_ingress_rules = flatten([ # Allow public ingress CIDRs to reach service ports
+    for cidr in var.allowed_public_ingress_cidrs : [
+      for port in local.service_ports :
+      {
+        name        = "service_ingress_https_${replace(cidr, "/", "_")}_${port}"
+        rule_number = 1 + index(var.allowed_public_ingress_cidrs, cidr)
+        egress      = false
+        protocol    = "tcp"
+        rule_action = "allow"
+        cidr_block  = cidr
+        from_port   = port
+        to_port     = port
+      }
+    ]
+  ])
   ecs_public_cidr_ingress_rules = [
     for cidr in var.allowed_public_ingress_cidrs : { # Allow inbound HTTPS (443) from a specific public CIDRs
       name        = "public_ingress_https_${replace(cidr, "/", "_")}"
@@ -91,7 +114,8 @@ locals {
     local.ecs_public_cidr_ingress_rules,
     concat(
       local.ecs_public_nacl_non_ingress_rules,
-      var.additional_public_egress_rules
+      var.additional_public_egress_rules,
+      local.ecs_public_cidr_service_ingress_rules
     )
   )
 }
