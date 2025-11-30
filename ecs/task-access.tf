@@ -145,28 +145,57 @@ resource "aws_iam_role_policy_attachment" "ecs_infrastructure_volumes" {
 # Security Group for ECS Tasks
 # ------------------------------------------------------------------------------
 
+locals {
+  # Create combinations of service ports and allowed ingress CIDRs for ingress rules
+  ecs_task_ingress_rules = flatten([
+    for cidr in var.allowed_public_ingress_cidrs : [
+      for port in local.service_ports : {
+        cidr = cidr
+        port = port
+        key  = "${replace(cidr, "/", "_")}_${port}"
+      }
+    ]
+  ])
+}
+
 resource "aws_security_group" "ecs_tasks" {
   name        = "${var.environment}-ecs-tasks-sg"
   description = "Security group for ECS tasks - Managed by Tofu"
   vpc_id      = aws_vpc.ecs.id
 
-  egress {
-    description = "Allow HTTPS outbound traffic - Managed by Tofu"
-    protocol    = "tcp"
-    from_port   = 443
-    to_port     = 443
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  egress {
-    description = "Allow NFS traffic for EFS - Managed by Tofu"
-    protocol    = "tcp"
-    from_port   = 2049
-    to_port     = 2049
-    cidr_blocks = [aws_vpc.ecs.cidr_block]
-  }
-
   tags = {
     Name = "${var.environment}-ecs-tasks-sg"
   }
+}
+
+resource "aws_security_group_rule" "ecs_tasks_egress_https" {
+  type              = "egress"
+  description       = "Allow HTTPS outbound traffic - Managed by Tofu"
+  from_port         = 443
+  to_port           = 443
+  protocol          = "tcp"
+  cidr_blocks       = ["0.0.0.0/0"]
+  security_group_id = aws_security_group.ecs_tasks.id
+}
+
+resource "aws_security_group_rule" "ecs_tasks_egress_nfs" {
+  type              = "egress"
+  description       = "Allow NFS traffic for EFS - Managed by Tofu"
+  from_port         = 2049
+  to_port           = 2049
+  protocol          = "tcp"
+  cidr_blocks       = [aws_vpc.ecs.cidr_block]
+  security_group_id = aws_security_group.ecs_tasks.id
+}
+
+resource "aws_security_group_rule" "ecs_tasks_ingress" {
+  for_each = { for access in local.ecs_task_ingress_rules : access.key => access }
+
+  type              = "ingress"
+  description       = "Allow ingress from ${each.value.cidr} on port ${each.value.port} - Managed by Tofu"
+  from_port         = each.value.port
+  to_port           = each.value.port
+  protocol          = "tcp"
+  cidr_blocks       = [each.value.cidr]
+  security_group_id = aws_security_group.ecs_tasks.id
 }
