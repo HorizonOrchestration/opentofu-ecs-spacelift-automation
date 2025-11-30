@@ -3,6 +3,9 @@
 # ------------------------------------------------------------------------------
 
 resource "aws_efs_access_point" "config" {
+  for_each = {
+    for container in var.container_definitions : container.name => container
+  }
   file_system_id = var.efs_file_system_id
 
   posix_user {
@@ -11,7 +14,7 @@ resource "aws_efs_access_point" "config" {
   }
 
   root_directory {
-    path = "/${var.task_name}-${var.container_definitions[0].name}-config"
+    path = "/${var.task_name}-${each.key}-persistent-config"
 
     creation_info {
       owner_gid   = 1000

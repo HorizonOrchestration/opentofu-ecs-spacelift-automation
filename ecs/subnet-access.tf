@@ -16,7 +16,7 @@ locals {
       for port in local.service_ports :
       {
         name        = "service_ingress_https_${replace(cidr, "/", "_")}_${port}"
-        rule_number = 1 + index(var.allowed_public_ingress_cidrs, cidr)
+        rule_number = 1 + index(var.allowed_public_ingress_cidrs, cidr) * 10 + index(local.service_ports, port)
         egress      = false
         protocol    = "tcp"
         rule_action = "allow"
