@@ -31,6 +31,17 @@ resource "aws_ecs_task_definition" "main" {
     }
   }
 
+  dynamic "volume" {
+    for_each = {
+      for volume in var.ebs_volumes : volume.name => volume
+    }
+    content {
+      name                = volume.key
+      host_path           = volume.value.host_path
+      configure_at_launch = true
+    }
+  }
+
   tags = {
     Name = "${var.environment}-${var.task_name}"
   }
