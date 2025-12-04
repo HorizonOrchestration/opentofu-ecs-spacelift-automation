@@ -199,3 +199,17 @@ resource "aws_security_group_rule" "ecs_tasks_ingress" {
   cidr_blocks       = [each.value.cidr]
   security_group_id = aws_security_group.ecs_tasks.id
 }
+
+# ------------------------------------------------------------------------------
+# Service Discovery Resources
+# ------------------------------------------------------------------------------
+
+resource "aws_service_discovery_private_dns_namespace" "ecs" {
+  name        = "${var.environment}-ecs"
+  description = "Private DNS namespace for ECS services - Managed by Tofu"
+  vpc         = aws_vpc.ecs.id
+
+  tags = {
+    Name = "${var.environment}-ecs"
+  }
+}

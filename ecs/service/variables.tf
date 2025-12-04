@@ -71,3 +71,12 @@ variable "efs_file_system_id" {
   description = "EFS filesystem ID for shared configuration storage"
   type        = string
 }
+
+variable "ebs_volumes" {
+  description = "List of EBS volumes to attach to the task containers"
+  type = list(object({
+    name      = string
+    host_path = string
+  }))
+  default = []
+}
