@@ -135,8 +135,8 @@ variable "capacity_provider" {
 variable "ecs_services" {
   description = "Map of ECS services to create"
   type = map(object({
-    task_cpu              = optional(number, 256)
-    task_memory           = optional(number, 512)
+    task_cpu              = optional(number, 512)
+    task_memory           = optional(number, 1024)
     container_definitions = list(any)
     ebs_volumes = optional(map(object({
       host_path = string
