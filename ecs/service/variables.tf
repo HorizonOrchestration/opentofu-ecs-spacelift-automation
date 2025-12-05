@@ -72,6 +72,11 @@ variable "efs_file_system_id" {
   type        = string
 }
 
+variable "shared_efs_access_point_id" {
+  description = "EFS access point ID for shared persistent storage"
+  type        = string
+}
+
 variable "ebs_volumes" {
   description = "List of EBS volumes to attach to the task containers"
   type = map(object({

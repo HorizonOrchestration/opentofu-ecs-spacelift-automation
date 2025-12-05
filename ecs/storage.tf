@@ -38,3 +38,22 @@ resource "aws_efs_mount_target" "ecs_efs" {
   subnet_id       = var.use_private_cidrs ? aws_subnet.ecs_private[count.index].id : aws_subnet.ecs_public[count.index].id
   security_groups = [aws_security_group.efs.id]
 }
+
+resource "aws_efs_access_point" "shared" {
+  file_system_id = aws_efs_file_system.ecs_efs.id
+
+  posix_user {
+    gid = 1000
+    uid = 1000
+  }
+
+  root_directory {
+    path = "/shared-persistent-resources"
+
+    creation_info {
+      owner_gid   = 1000
+      owner_uid   = 1000
+      permissions = "755"
+    }
+  }
+}

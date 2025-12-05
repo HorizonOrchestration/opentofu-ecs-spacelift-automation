@@ -104,6 +104,7 @@ This project mirrors the structure and quality of [HorizonOrchestration/tf-eks-h
 | [aws_default_security_group.ecs_default_block_all](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/default_security_group) | resource |
 | [aws_ecs_cluster.main](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ecs_cluster) | resource |
 | [aws_ecs_cluster_capacity_providers.main](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ecs_cluster_capacity_providers) | resource |
+| [aws_efs_access_point.shared](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/efs_access_point) | resource |
 | [aws_efs_file_system.ecs_efs](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/efs_file_system) | resource |
 | [aws_efs_mount_target.ecs_efs](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/efs_mount_target) | resource |
 | [aws_eip.ecs_nat](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/eip) | resource |
@@ -162,7 +163,7 @@ This project mirrors the structure and quality of [HorizonOrchestration/tf-eks-h
 | <a name="input_azs"></a> [azs](#input\_azs) | List of availability zones to use for subnets | `list(string)` | <pre>[<br/>  "eu-west-2a",<br/>  "eu-west-2b",<br/>  "eu-west-2c"<br/>]</pre> | no |
 | <a name="input_capacity_provider"></a> [capacity\_provider](#input\_capacity\_provider) | ECS capacity provider to use (FARGATE or FARGATE\_SPOT) | `string` | `"FARGATE"` | no |
 | <a name="input_cloudwatch_log_retention_days"></a> [cloudwatch\_log\_retention\_days](#input\_cloudwatch\_log\_retention\_days) | Number of days to retain CloudWatch logs | `number` | `7` | no |
-| <a name="input_ecs_services"></a> [ecs\_services](#input\_ecs\_services) | Map of ECS services to create | <pre>map(object({<br/>    task_cpu              = optional(number, 256)<br/>    task_memory           = optional(number, 512)<br/>    container_definitions = list(any)<br/>    ebs_volumes = optional(list(object({<br/>      name      = string<br/>      host_path = string<br/>    })), [])<br/>  }))</pre> | `{}` | no |
+| <a name="input_ecs_services"></a> [ecs\_services](#input\_ecs\_services) | Map of ECS services to create | <pre>map(object({<br/>    task_cpu              = optional(number, 256)<br/>    task_memory           = optional(number, 512)<br/>    container_definitions = list(any)<br/>    ebs_volumes = optional(map(object({<br/>      host_path = string<br/>    })), {})<br/>  }))</pre> | `{}` | no |
 | <a name="input_enable_cloudwatch_logging"></a> [enable\_cloudwatch\_logging](#input\_enable\_cloudwatch\_logging) | Whether to enable CloudWatch logging for VPC Flow Logs | `bool` | `true` | no |
 | <a name="input_enable_container_insights"></a> [enable\_container\_insights](#input\_enable\_container\_insights) | Whether to enable Container Insights for the ECS cluster | `bool` | `true` | no |
 | <a name="input_environment"></a> [environment](#input\_environment) | environment tag to apply to resources | `string` | `"dev"` | no |
