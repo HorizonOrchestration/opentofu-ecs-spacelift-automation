@@ -74,9 +74,8 @@ variable "efs_file_system_id" {
 
 variable "ebs_volumes" {
   description = "List of EBS volumes to attach to the task containers"
-  type = list(object({
-    name      = string
+  type = map(object({
     host_path = string
   }))
-  default = []
+  default = {}
 }

@@ -32,9 +32,7 @@ resource "aws_ecs_task_definition" "main" {
   }
 
   dynamic "volume" {
-    for_each = {
-      for volume in var.ebs_volumes : volume.name => volume
-    }
+    for_each = var.ebs_volumes
     content {
       name                = volume.key
       host_path           = volume.value.host_path

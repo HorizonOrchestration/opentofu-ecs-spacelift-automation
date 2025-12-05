@@ -19,5 +19,6 @@ module "services" {
   container_definitions = each.value.container_definitions
 
   # Storage
+  ebs_volumes        = each.value.ebs_volumes
   efs_file_system_id = aws_efs_file_system.ecs_efs.id
 }
