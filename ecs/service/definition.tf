@@ -13,6 +13,19 @@ resource "aws_ecs_task_definition" "main" {
 
   container_definitions = jsonencode(var.container_definitions)
 
+  volume {
+    name = "shared"
+
+    efs_volume_configuration {
+      file_system_id     = var.efs_file_system_id
+      transit_encryption = "ENABLED"
+
+      authorization_config {
+        access_point_id = var.shared_efs_access_point_id
+      }
+    }
+  }
+
   dynamic "volume" {
     for_each = {
       for container in var.container_definitions : container.name => container
@@ -35,7 +48,6 @@ resource "aws_ecs_task_definition" "main" {
     for_each = var.ebs_volumes
     content {
       name                = volume.key
-      host_path           = volume.value.host_path
       configure_at_launch = true
     }
   }
