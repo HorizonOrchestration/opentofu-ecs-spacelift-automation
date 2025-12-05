@@ -138,10 +138,9 @@ variable "ecs_services" {
     task_cpu              = optional(number, 256)
     task_memory           = optional(number, 512)
     container_definitions = list(any)
-    ebs_volumes = optional(list(object({
-      name      = string
+    ebs_volumes = optional(map(object({
       host_path = string
-    })), [])
+    })), {})
   }))
   default = {}
 }
