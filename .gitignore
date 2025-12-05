@@ -70,3 +70,6 @@ logs/
 
 # OS files
 Thumbs.db
+
+# Local Notes
+.notes/
