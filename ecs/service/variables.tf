@@ -93,7 +93,7 @@ variable "shared_efs_access_point_id" {
 variable "ebs_volumes" {
   description = "List of EBS volumes to attach to the task containers"
   type = map(object({
-    host_path = string
+    size_in_gb = optional(number, 20)
   }))
   default = {}
 }
@@ -115,4 +115,10 @@ variable "task_security_group_id" {
 variable "subnet_ids" {
   description = "List of subnet IDs for the ECS service"
   type        = list(string)
+}
+
+variable "create_discovery_service" {
+  description = "Whether to create a Service Discovery service for this ECS task"
+  type        = bool
+  default     = true
 }

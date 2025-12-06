@@ -29,7 +29,8 @@ module "services" {
   efs_file_system_id         = aws_efs_file_system.ecs_efs.id
 
   # Networking Configuration
-  namespace_id           = aws_service_discovery_private_dns_namespace.ecs.id
-  task_security_group_id = aws_security_group.ecs_tasks.id
-  subnet_ids             = var.use_private_cidrs ? aws_subnet.private[*].id : aws_subnet.public[*].id
+  namespace_id             = aws_service_discovery_private_dns_namespace.ecs.id
+  task_security_group_id   = aws_security_group.ecs_tasks.id
+  subnet_ids               = var.use_private_cidrs ? aws_subnet.ecs_private[*].id : aws_subnet.ecs_public[*].id
+  create_discovery_service = each.value.create_discovery_service
 }

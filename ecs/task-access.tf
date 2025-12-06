@@ -168,11 +168,26 @@ resource "aws_security_group" "ecs_tasks" {
   }
 }
 
-resource "aws_security_group_rule" "ecs_tasks_egress_https" {
+resource "aws_security_group_rule" "ecs_tasks_ingress" {
+  for_each = { for access in local.ecs_task_ingress_rules : access.key => access }
+
+  type              = "ingress"
+  description       = "Allow ingress from ${each.value.cidr} on port ${each.value.port} - Managed by Tofu"
+  from_port         = each.value.port
+  to_port           = each.value.port
+  protocol          = "tcp"
+  cidr_blocks       = [each.value.cidr]
+  security_group_id = aws_security_group.ecs_tasks.id
+}
+
+resource "aws_security_group_rule" "ecs_tasks_egress" {
+  for_each = {
+    for port in var.egress_ports : tostring(port) => port
+  }
   type              = "egress"
-  description       = "Allow HTTPS outbound traffic - Managed by Tofu"
-  from_port         = 443
-  to_port           = 443
+  description       = "Allow outbound traffic on port ${each.key} - Managed by Tofu"
+  from_port         = each.value
+  to_port           = each.value
   protocol          = "tcp"
   cidr_blocks       = ["0.0.0.0/0"]
   security_group_id = aws_security_group.ecs_tasks.id
@@ -185,18 +200,6 @@ resource "aws_security_group_rule" "ecs_tasks_egress_nfs" {
   to_port           = 2049
   protocol          = "tcp"
   cidr_blocks       = [aws_vpc.ecs.cidr_block]
-  security_group_id = aws_security_group.ecs_tasks.id
-}
-
-resource "aws_security_group_rule" "ecs_tasks_ingress" {
-  for_each = { for access in local.ecs_task_ingress_rules : access.key => access }
-
-  type              = "ingress"
-  description       = "Allow ingress from ${each.value.cidr} on port ${each.value.port} - Managed by Tofu"
-  from_port         = each.value.port
-  to_port           = each.value.port
-  protocol          = "tcp"
-  cidr_blocks       = [each.value.cidr]
   security_group_id = aws_security_group.ecs_tasks.id
 }
 
