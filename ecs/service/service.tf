@@ -21,7 +21,6 @@ resource "aws_ecs_service" "service" {
   cluster                            = var.cluster_arn
   task_definition                    = aws_ecs_task_definition.main.arn
   desired_count                      = var.desired_count
-  launch_type                        = "FARGATE"
   propagate_tags                     = "TASK_DEFINITION"
   deployment_maximum_percent         = 100
   deployment_minimum_healthy_percent = 0
