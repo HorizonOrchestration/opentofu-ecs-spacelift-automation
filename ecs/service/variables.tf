@@ -43,10 +43,6 @@ variable "task_role_arn" {
   type        = string
 }
 
-# ------------------------------------------------------------------------------
-# Container Configuration
-# ------------------------------------------------------------------------------
-
 variable "container_definitions" {
   description = "Container definitions for the ECS task"
   type        = list(any)
@@ -54,14 +50,31 @@ variable "container_definitions" {
 }
 
 # ------------------------------------------------------------------------------
-# Logging Configuration
+# Service Configuration
 # ------------------------------------------------------------------------------
 
-# variable "log_group_name" {
-#   description = "CloudWatch log group name for container logs"
-#   type        = string
-#   default     = null
-# }
+variable "cluster_arn" {
+  description = "ARN of the ECS cluster"
+  type        = string
+}
+
+variable "desired_count" {
+  description = "Desired number of task instances"
+  type        = number
+  default     = 1
+}
+
+variable "capacity_provider" {
+  description = "Capacity provider name for the ECS cluster"
+  type        = string
+  default     = "FARGATE_SPOT"
+}
+
+variable "infra_role_arn" {
+  description = "ARN of the infrastructure role for ECS tasks"
+  type        = string
+  default     = ""
+}
 
 # ------------------------------------------------------------------------------
 # Storage Configuration
@@ -83,4 +96,23 @@ variable "ebs_volumes" {
     host_path = string
   }))
   default = {}
+}
+
+# ------------------------------------------------------------------------------
+# Networking Configuration
+# ------------------------------------------------------------------------------
+
+variable "namespace_id" {
+  description = "Service Discovery Namespace ID"
+  type        = string
+}
+
+variable "task_security_group_id" {
+  description = "Security group ID for the ECS task"
+  type        = string
+}
+
+variable "subnet_ids" {
+  description = "List of subnet IDs for the ECS service"
+  type        = list(string)
 }

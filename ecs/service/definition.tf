@@ -2,8 +2,12 @@
 # ECS Task Definition
 # ------------------------------------------------------------------------------
 
+locals {
+  definition_name = "${var.environment}-${var.task_name}"
+}
+
 resource "aws_ecs_task_definition" "main" {
-  family                   = "${var.environment}-${var.task_name}"
+  family                   = local.definition_name
   network_mode             = "awsvpc"
   requires_compatibilities = ["FARGATE"]
   cpu                      = var.task_cpu
