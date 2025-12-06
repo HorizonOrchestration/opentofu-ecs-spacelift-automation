@@ -79,16 +79,6 @@ locals {
       from_port   = null
       to_port     = null
     },
-    { # Allow outbound HTTPS (443) to the internet
-      name        = "public_egress_https"
-      rule_number = 101
-      egress      = true
-      protocol    = "tcp"
-      rule_action = "allow"
-      cidr_block  = "0.0.0.0/0"
-      from_port   = 443
-      to_port     = 443
-    },
     { # Allow all established outbound traffic (ephemeral ports)
       name        = "public_egress_ephemeral"
       rule_number = 199
@@ -101,7 +91,7 @@ locals {
     },
     { # Default deny all other outbound traffic
       name        = "public_egress_deny_all"
-      rule_number = 200
+      rule_number = 2000
       egress      = true
       protocol    = "-1"
       rule_action = "deny"
@@ -114,7 +104,6 @@ locals {
     local.ecs_public_cidr_ingress_rules,
     concat(
       local.ecs_public_nacl_non_ingress_rules,
-      var.additional_public_egress_rules,
       local.ecs_public_cidr_service_ingress_rules
     )
   )
@@ -138,6 +127,23 @@ resource "aws_network_acl_rule" "ecs_public" {
   cidr_block     = each.value.cidr_block
   from_port      = each.value.from_port == null ? null : each.value.from_port
   to_port        = each.value.to_port == null ? null : each.value.to_port
+}
+
+resource "aws_network_acl_rule" "service_egress" {
+  for_each = {
+    for index, port in var.egress_ports : "service_egress_port_${port}" => {
+      "index" = index
+      "port"  = port
+    }
+  }
+  network_acl_id = aws_network_acl.ecs_public.id
+  rule_number    = 400 + each.value.index
+  egress         = true
+  protocol       = "tcp"
+  rule_action    = "allow"
+  cidr_block     = "0.0.0.0/0"
+  from_port      = each.value.port
+  to_port        = each.value.port
 }
 
 # Private NACL Resources

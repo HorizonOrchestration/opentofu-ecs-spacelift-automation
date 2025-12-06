@@ -3,7 +3,7 @@
 # ------------------------------------------------------------------------------
 
 resource "aws_service_discovery_service" "service" {
-  count = var.namespace_id != null ? 1 : 0
+  count = var.create_discovery_service ? 1 : 0
   name  = local.definition_name
 
   dns_config {
@@ -43,21 +43,20 @@ resource "aws_ecs_service" "service" {
   dynamic "volume_configuration" {
     for_each = var.ebs_volumes
     content {
-      name = each.key
+      name = volume_configuration.key
 
       managed_ebs_volume {
         file_system_type = "ext4"
         role_arn         = var.infra_role_arn
-        size_in_gb       = each.value.size_in_gb
+        size_in_gb       = volume_configuration.value.size_in_gb
       }
     }
   }
 
-  # service_connect_configuration {
-  #   enabled = true
-  #   namespace = ""#"${var.namespace}"
-  #   service {
-  #     discovery_name = ""#"${var.task_name}"
-  #   }
-  # }
+  dynamic "service_registries" {
+    for_each = var.create_discovery_service ? [1] : []
+    content {
+      registry_arn = aws_service_discovery_service.service[0].arn
+    }
+  }
 }

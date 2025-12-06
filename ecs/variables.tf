@@ -66,21 +66,6 @@ variable "allowed_public_ingress_cidrs" {
   default     = ["123.123.123.123/32"]
 }
 
-variable "additional_public_egress_rules" {
-  description = "Additional NACL egress rules for public subnets"
-  type = list(object({
-    name        = string
-    rule_number = number
-    egress      = bool
-    protocol    = string
-    rule_action = string
-    cidr_block  = string
-    from_port   = number
-    to_port     = number
-  }))
-  default = []
-}
-
 variable "additional_private_egress_rules" {
   description = "Additional NACL egress rules for private subnets"
   type = list(object({
@@ -94,6 +79,12 @@ variable "additional_private_egress_rules" {
     to_port     = number
   }))
   default = []
+}
+
+variable "egress_ports" {
+  description = "List of egress ports to allow"
+  type        = list(number)
+  default     = [443]
 }
 
 # ------------------------------------------------------------------------------
@@ -135,11 +126,11 @@ variable "capacity_provider" {
 variable "ecs_services" {
   description = "Map of ECS services to create"
   type = map(object({
-    task_cpu              = optional(number, 512)
-    task_memory           = optional(number, 1024)
-    container_definitions = list(any)
+    task_cpu                 = optional(number, 512)
+    task_memory              = optional(number, 1024)
+    container_definitions    = list(any)
+    create_discovery_service = optional(bool, true)
     ebs_volumes = optional(map(object({
-      host_path  = string
       size_in_gb = optional(number, 20)
     })), {})
   }))
