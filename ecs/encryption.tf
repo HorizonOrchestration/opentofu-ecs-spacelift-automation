@@ -31,6 +31,18 @@ data "aws_iam_policy_document" "customer_managed_key" {
     ]
     resources = ["*"]
   }
+  statement {
+    sid    = "AllowECSTaskDecrypt"
+    effect = "Allow"
+    principals {
+      type        = "AWS"
+      identifiers = [aws_iam_role.ecs_task.arn]
+    }
+    actions = [
+      "kms:Decrypt"
+    ]
+    resources = ["*"]
+  }
 }
 
 resource "aws_kms_key" "customer_managed_key" {

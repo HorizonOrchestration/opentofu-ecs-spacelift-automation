@@ -111,6 +111,37 @@ resource "aws_iam_role_policy_attachment" "ecs_task_ssm" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
 }
 
+# S3 read permissions for ECS tasks
+data "aws_iam_policy_document" "ecs_task_s3" {
+  statement {
+    effect = "Allow"
+    actions = [
+      "s3:GetObject",
+      "s3:ListBucket"
+    ]
+    resources = [
+      aws_s3_bucket.ecs_resources.arn,
+      "${aws_s3_bucket.ecs_resources.arn}/*"
+    ]
+  }
+
+  statement {
+    effect = "Allow"
+    actions = [
+      "kms:Decrypt"
+    ]
+    resources = [
+      aws_kms_key.customer_managed_key.arn
+    ]
+  }
+}
+
+resource "aws_iam_role_policy" "ecs_task_s3" {
+  name   = "${var.environment}-ecs-task-s3-policy"
+  role   = aws_iam_role.ecs_task.id
+  policy = data.aws_iam_policy_document.ecs_task_s3.json
+}
+
 # ------------------------------------------------------------------------------
 # ECS Infrastructure Role (for EBS volume management)
 # ------------------------------------------------------------------------------

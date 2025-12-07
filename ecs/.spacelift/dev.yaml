@@ -9,5 +9,9 @@ skip-check:
 - CKV2_AWS_11 # Disable VPC flow logs in dev for cost.
 - CKV_AWS_336 # Allow non-readonly root access for container functionality.
 - CKV_AWS_333 # Allow public IPs since not using load balancers.
+- CKV2_AWS_62 # Not using event notifications.
+- CKV2_AWS_61 # Constant resources, not using lifecycle policies.
+- CKV_AWS_144 # Not using cross-region replication.
+- CKV_AWS_18  # Not using access logging.
 - CKV2_AWS_5  # Temp disable until tasks are ready.
 quiet: true
