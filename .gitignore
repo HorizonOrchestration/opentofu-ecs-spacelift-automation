@@ -73,3 +73,6 @@ Thumbs.db
 
 # Local Notes
 .notes/
+
+# Service init resources
+ecs/resources/

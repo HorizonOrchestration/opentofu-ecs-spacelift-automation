@@ -57,3 +57,77 @@ resource "aws_efs_access_point" "shared" {
     }
   }
 }
+
+# ------------------------------------------------------------------------------
+# Additional Service Resources
+# ------------------------------------------------------------------------------
+
+resource "aws_s3_bucket" "ecs_resources" {
+  bucket = "ecs-resources-${var.environment}-${data.aws_caller_identity.current.account_id}"
+
+  tags = {
+    Name = "ecs-resources-${var.environment}"
+  }
+}
+
+resource "aws_s3_bucket_versioning" "ecs_resources" {
+  bucket = aws_s3_bucket.ecs_resources.id
+
+  versioning_configuration {
+    status = "Enabled"
+  }
+}
+
+resource "aws_s3_bucket_server_side_encryption_configuration" "ecs_resources" {
+  bucket = aws_s3_bucket.ecs_resources.id
+
+  rule {
+    apply_server_side_encryption_by_default {
+      sse_algorithm     = "aws:kms"
+      kms_master_key_id = aws_kms_key.customer_managed_key.arn
+    }
+    bucket_key_enabled = true
+  }
+}
+
+resource "aws_s3_bucket_public_access_block" "ecs_resources" {
+  bucket = aws_s3_bucket.ecs_resources.id
+
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
+  restrict_public_buckets = true
+}
+
+data "aws_iam_policy_document" "ecs_resources_bucket" {
+  statement {
+    sid    = "AllowECSTaskAccess"
+    effect = "Allow"
+    principals {
+      type        = "AWS"
+      identifiers = [aws_iam_role.ecs_task.arn]
+    }
+    actions = [
+      "s3:GetObject",
+      "s3:ListBucket"
+    ]
+    resources = [
+      aws_s3_bucket.ecs_resources.arn,
+      "${aws_s3_bucket.ecs_resources.arn}/*"
+    ]
+  }
+}
+
+resource "aws_s3_bucket_policy" "ecs_resources" {
+  bucket = aws_s3_bucket.ecs_resources.id
+  policy = data.aws_iam_policy_document.ecs_resources_bucket.json
+}
+
+resource "aws_s3_object" "config_files" {
+  for_each = fileset("${path.module}/resources/", "**")
+
+  bucket = aws_s3_bucket.ecs_resources.id
+  key    = each.value
+  source = "${path.module}/resources/${each.value}"
+  etag   = filemd5("${path.module}/resources/${each.value}")
+}
