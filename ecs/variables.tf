@@ -132,9 +132,9 @@ variable "ecs_services" {
       name              = string
       image             = string
       essential         = optional(bool, true)
-      cpu               = optional(number, 256)
-      memory            = optional(number, 512)
-      memoryReservation = optional(number, 256)
+      cpu               = optional(number, 0)
+      memory            = optional(number)
+      memoryReservation = optional(number)
       startTimeout      = optional(number, 60)
       stopTimeout       = optional(number, 120)
       portMappings = optional(list(object({
