@@ -126,9 +126,43 @@ variable "capacity_provider" {
 variable "ecs_services" {
   description = "Map of ECS services to create"
   type = map(object({
-    task_cpu                 = optional(number, 512)
-    task_memory              = optional(number, 1024)
-    container_definitions    = list(any)
+    task_cpu    = optional(number, 512)
+    task_memory = optional(number, 1024)
+    container_definitions = list(object({
+      name              = string
+      image             = string
+      essential         = optional(bool, true)
+      cpu               = optional(number, 256)
+      memory            = optional(number, 512)
+      memoryReservation = optional(number, 256)
+      startTimeout      = optional(number, 60)
+      stopTimeout       = optional(number, 120)
+      portMappings = optional(list(object({
+        name          = string
+        containerPort = number
+        hostPort      = number
+        protocol      = optional(string, "tcp")
+      })), [])
+      environment = optional(list(object({
+        name  = string
+        value = string
+      })), [])
+      secrets = optional(list(object({
+        name      = string
+        valueFrom = string
+      })), [])
+      command = optional(list(string), [])
+      logConfiguration = optional(object({
+        logDriver = optional(string)
+        options   = optional(map(string), {})
+      }), {})
+      mountPoints = optional(list(object({
+        sourceVolume  = string
+        containerPath = string
+        readOnly      = optional(bool, false)
+      })), [])
+      dependsOn = optional(list(map(string)), [])
+    }))
     create_discovery_service = optional(bool, true)
     ebs_volumes = optional(map(object({
       size_in_gb = optional(number, 20)
