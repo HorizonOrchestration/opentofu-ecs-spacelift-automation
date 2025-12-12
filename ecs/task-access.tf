@@ -172,6 +172,11 @@ resource "aws_iam_role_policy_attachment" "ecs_infrastructure_volumes" {
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSInfrastructureRolePolicyForVolumes"
 }
 
+resource "aws_iam_role_policy_attachment" "ecs_infrastructure_ec2_readonly" {
+  role       = aws_iam_role.ecs_infrastructure.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ReadOnlyAccess"
+}
+
 # ------------------------------------------------------------------------------
 # Security Group for ECS Tasks
 # ------------------------------------------------------------------------------
