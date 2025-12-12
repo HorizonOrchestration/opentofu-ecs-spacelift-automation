@@ -15,8 +15,8 @@ This repository contains OpenTofu configurations for deploying a personal ECS la
 
 ```
 .
-├── prereqs/          # IAM roles and prerequisites for Spacelift
-└── (future)          # ECS clusters, services, networking, etc.
+├── prereqs/  # IAM roles and prerequisites for Spacelift
+└── ecs/      # ECS cluster, services, networking, etc.
 ```
 
 ## Getting Started
@@ -49,7 +49,6 @@ The `prereqs/` directory contains the IAM role configuration that Spacelift assu
 This repository uses [pre-commit](https://pre-commit.com/) to automatically:
 - Format terraform code with `terraform fmt`
 - Generate terraform documentation for the `ecs/` directory
-- Run Spacelift local preview validation
 
 To install:
 ```bash
