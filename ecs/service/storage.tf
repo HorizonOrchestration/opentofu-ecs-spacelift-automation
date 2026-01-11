@@ -14,7 +14,7 @@ resource "aws_efs_access_point" "config" {
   }
 
   root_directory {
-    path = "/${var.task_name}-${each.key}-persistent-config"
+    path = "/${var.task_name}-${each.key}-config"
 
     creation_info {
       owner_gid   = 1000
