@@ -126,8 +126,8 @@ resource "aws_s3_bucket_policy" "ecs_resources" {
 resource "aws_s3_object" "config_files" {
   for_each = fileset("${path.module}/resources/", "**")
 
-  bucket = aws_s3_bucket.ecs_resources.id
-  key    = each.value
-  source = "${path.module}/resources/${each.value}"
-  etag   = filemd5("${path.module}/resources/${each.value}")
+  bucket  = aws_s3_bucket.ecs_resources.id
+  key     = each.value
+  content = replace(file("${path.module}/resources/${each.value}"), "\r", "")
+  etag    = md5(replace(file("${path.module}/resources/${each.value}"), "\r", ""))
 }
